@@ -37,3 +37,6 @@ next-env.d.ts
 
 .worker-next
 .dev.vars
+
+.env*
+!.env.example
