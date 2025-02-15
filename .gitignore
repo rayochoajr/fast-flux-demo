@@ -8,6 +8,8 @@
 
 # testing
 /coverage
+test_image.webp
+*.webp
 
 # next.js
 /.next/
@@ -36,5 +38,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# worker
 .worker-next
 .dev.vars
