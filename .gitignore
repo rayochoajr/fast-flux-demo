@@ -41,26 +41,3 @@ next-env.d.ts
 # worker
 .worker-next
 .dev.vars
-
-# Application specific
-# Cache and history
-.image-cache/
-.history-data/
-*.cache.json
-history.json
-
-# Generated images
-/public/generated/
-/public/cache/
-*.generated.webp
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Logs and diagnostics
-*.log
-.diagnostic-data/
-performance-metrics.json

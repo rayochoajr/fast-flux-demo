@@ -3,41 +3,216 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
   }
 }
 
+/* Critical CSS */
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--background-end-rgb))
+  )
+  rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Accessibility improvements */
+:focus {
+  outline: 2px solid rgb(var(--foreground-rgb));
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--foreground-rgb));
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  * {
+    border-color: ButtonText;
+  }
+}
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --radius: 0.75rem;
+    --font-sans: 'Inter var', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0a0a0a;
+      --foreground: #ededed;
+    }
+  }
+
+  html {
+    @apply antialiased scroll-smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    @apply text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900;
+    font-feature-settings: "ss01" 1, "ss02" 1, "cv01" 1, "cv03" 1;
+  }
+
+  ::selection {
+    @apply bg-blue-500/20 dark:bg-blue-500/30;
+  }
+
+  input::placeholder {
+    @apply text-gray-400 dark:text-gray-500;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    @apply backdrop-blur-lg bg-white/[0.85] dark:bg-gray-900/[0.85] border border-white/20 dark:border-gray-800/20;
+  }
+
+  .input-ring {
+    @apply ring-1 ring-gray-200 dark:ring-gray-800 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400;
+  }
+
+  .button-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-  .masonry {
-    column-gap: 0;
-    column-count: 1;
+
+  .mask-image-gradient {
+    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
   }
-  .masonry-sm {
-    column-count: 2;
+
+  .scrollbar-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
-  .masonry-md {
-    column-count: 3;
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
   }
-  .masonry-item {
-    break-inside: avoid;
-    margin-bottom: 0;
+}
+
+/* Advanced Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
   }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 1000px 100%;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Smooth Image Loading */
+.image-loading {
+  @apply relative overflow-hidden bg-gray-100 dark:bg-gray-800;
+}
+
+.image-loading::before {
+  content: "";
+  @apply absolute inset-0 animate-shimmer;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  @apply w-1.5;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-300/50 dark:bg-gray-700/50 rounded-full hover:bg-gray-400/50 dark:hover:bg-gray-600/50 transition-colors;
+}
+
+/* Focus Styles */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+}
+
+/* Typography Enhancements */
+.heading-1 {
+  @apply text-4xl font-bold tracking-tight;
+  font-feature-settings: "liga" 1, "salt" 1, "ss01" 1;
+}
+
+.heading-2 {
+  @apply text-3xl font-semibold tracking-tight;
+  font-feature-settings: "liga" 1, "salt" 1, "ss01" 1;
+}
+
+.body-text {
+  @apply text-base leading-7;
+  font-feature-settings: "liga" 1, "salt" 1, "ss01" 1;
 }
 
 .masonry-item {
@@ -67,4 +242,51 @@ body {
   bottom: 0px;
   left: 0px;
   width: auto;
+}
+
+/* Responsive Grid Layouts */
+.adaptive-grid {
+  @apply grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+
+/* Advanced Hover Effects */
+.hover-lift {
+  @apply transition-all duration-300 ease-out;
+  transform: translateY(0) translateZ(0);
+  backface-visibility: hidden;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px) translateZ(0);
+}
+
+/* Glass Morphism */
+.glass-morphism {
+  @apply backdrop-blur-lg bg-white/[0.85] dark:bg-gray-900/[0.85];
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.glass-morphism::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 100% 100%,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 50%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Snap Scroll */
+.snap-container {
+  @apply snap-x snap-mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.snap-item {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }

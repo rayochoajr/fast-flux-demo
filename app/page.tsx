@@ -934,8 +934,8 @@ export default function Home() {
                   />
                 </div>
                 <div className="relative flex-1">
-                  <input
-                    type="text"
+        <input
+          type="text"
                     value={currentPrompt}
                     onChange={handleInputChange}
                     placeholder="Describe your vision..."
@@ -983,8 +983,8 @@ export default function Home() {
               enqueue(() => generateImage(entry.prompt));
             }}
           />
-        </main>
-      </div>
+      </main>
+    </div>
     </ErrorBoundary>
   );
 }

@@ -1,22 +1,31 @@
 version: 1
-applications:
-  - frontend:
-      phases:
-        preBuild:
-          commands:
-            - npm ci
-            - npm install @tailwindcss/forms @tailwindcss/typography --save-dev
-        build:
-          commands:
-            - npm run build
-      artifacts:
-        baseDirectory: .next
-        files:
-          - '**/*'
-          - '../public/**/*'
-          - '../static/**/*'
-      cache:
-        paths:
-          - node_modules/**/*
-          - .next/cache/**/*
-    appRoot: . 
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+        # Verify Node version and dependencies
+        - node -e "console.log('Node version:', process.version)"
+        - npm list next
+        # Install SSR adapter
+        - npm install @aws-amplify/adapter-nextjs
+    build:
+      commands:
+        # Configure environment
+        - env | grep -e NEXT_PUBLIC_ -e REPLICATE_ >> .env.production
+        # Build with SSR configuration
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+      # Include all necessary files for SSR
+      - ../node_modules/**/*
+      - ../public/**/*
+      - ../package.json
+      - ../.next/**/*
+      - ../next.config.js
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/* 
