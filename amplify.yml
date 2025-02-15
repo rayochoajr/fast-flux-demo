@@ -1,0 +1,22 @@
+version: 1
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci
+            - npm install @tailwindcss/forms @tailwindcss/typography --save-dev
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: .next
+        files:
+          - '**/*'
+          - '../public/**/*'
+          - '../static/**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .next/cache/**/*
+    appRoot: . 
