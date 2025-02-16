@@ -19,11 +19,17 @@
 # misc
 .DS_Store
 *.pem
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 
 # local env files
 .env*.local
@@ -35,5 +41,31 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
 .worker-next
 .dev.vars
+dist/
+.wrangler/
+.cloudflare/
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+.npm/
+
+# Test coverage
+coverage/
+.nyc_output/
