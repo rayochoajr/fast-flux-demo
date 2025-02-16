@@ -1,0 +1,37 @@
+{
+  "name": "ai-image-generator",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-amplify/adapter-nextjs": "^1.5.0",
+    "@sentry/browser": "^7.x",
+    "@sentry/nextjs": "^7.120.3",
+    "@sentry/replay": "^7.x",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "framer-motion": "^10.x",
+    "lodash": "^4.x",
+    "next": "13.x",
+    "react": "18.x",
+    "react-dom": "18.x",
+    "replicate": "^0.x"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.x",
+    "@types/node": "^18.x",
+    "@types/react": "^18.x",
+    "@types/react-dom": "^18.x",
+    "autoprefixer": "^10.x",
+    "eslint": "^9.20.1",
+    "postcss": "^8.x",
+    "tailwindcss": "^3.x",
+    "typescript": "^5.x"
+  }
+}

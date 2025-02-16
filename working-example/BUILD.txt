@@ -1,0 +1,10 @@
+2025-02-16T03:08:54.813Z [INFO]: # Cloning repository: git@github.com:rayochoajr/fast-flux-demo.git
+2025-02-16T03:08:55.385Z [INFO]: 
+2025-02-16T03:08:55.386Z [INFO]: Cloning into 'fast-flux-demo'...
+2025-02-16T03:08:55.386Z [INFO]: # Checking for Git submodules at: /codebuild/output/src3649864340/src/fast-flux-demo/.gitmodules
+2025-02-16T03:08:55.394Z [ERROR]: !!! CustomerError: Unable to parse build spec: bad indentation of a mapping entry (1:236)
+                                  1 |  ...   artifacts:\n    baseDirectory: .next\n    files:\n      - '** ...
+                                  -----------------------------------------^
+2025-02-16T03:08:55.394Z [INFO]: # Starting environment caching...
+2025-02-16T03:08:55.394Z [INFO]: # Environment caching completed
+

@@ -1,0 +1,138 @@
+version: 1
+applications:
+  - appRoot: .
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            # Set Node version
+            - nvm install 20.11.1
+            - nvm use 20.11.1
+            
+            # Create deployment structure
+            - |
+              echo "Creating deployment structure..."
+              mkdir -p compute/default/public
+              mkdir -p static
+            
+            # Environment verification
+            - echo "Verifying build environment..."
+            - echo "Node version:" && node -v
+            - echo "NPM version:" && npm -v
+            
+            # Set up production environment
+            - |
+              echo "Setting up production environment..."
+              cp package.json compute/default/
+              cp .env.production compute/default/
+              
+              # Create production server.js
+              cat > compute/default/server.js << 'EOL'
+              const { createServer } = require('http')
+              const { parse } = require('url')
+              const next = require('next')
+              
+              const dev = false
+              const hostname = 'localhost'
+              const port = process.env.PORT || 3000
+              const app = next({ dev, hostname, port })
+              const handle = app.getRequestHandler()
+              
+              app.prepare().then(() => {
+                createServer(async (req, res) => {
+                  try {
+                    const parsedUrl = parse(req.url, true)
+                    await handle(req, res, parsedUrl)
+                  } catch (err) {
+                    console.error('Error occurred handling', req.url, err)
+                    res.statusCode = 500
+                    res.end('Internal Server Error')
+                  }
+                })
+                .once('error', (err) => {
+                  console.error(err)
+                  process.exit(1)
+                })
+                .listen(port, () => {
+                  console.log(`> Ready on http://${hostname}:${port}`)
+                })
+              })
+              EOL
+              
+              # Create deployment script
+              cat > compute/default/run.sh << 'EOL'
+              #!/bin/bash
+              unset AWS_ACCESS_KEY_ID
+              unset AWS_SECRET_ACCESS_KEY
+              unset AWS_SESSION_TOKEN
+              
+              # Create necessary directories
+              mkdir -p '/tmp/app/.next/server/pages'
+              
+              # Copy server pages
+              echo '[x-amplify-log][INFO] starting copy'
+              cp -r '/var/task/.next/server/pages' '/tmp/app/.next/server'
+              echo '[x-amplify-log][INFO] copy server pages complete'
+              
+              # Copy and link files
+              cp -f /var/task/server.js /tmp/app/server.js
+              ln -sf '/var/task/.env.production' '/tmp/app/.env.production'
+              ln -sf '/var/task/node_modules' '/tmp/app/node_modules'
+              ln -sf '/var/task/package.json' '/tmp/app/package.json'
+              ln -sf '/var/task/public' '/tmp/app/public'
+              
+              # Link Next.js files
+              for file in BUILD_ID app-build-manifest.json build-manifest.json routes-manifest.json; do
+                ln -sf "/var/task/.next/$file" "/tmp/app/.next/$file"
+              done
+              
+              # Link server files
+              for file in pages-manifest.json prerender-manifest.json; do
+                ln -sf "/var/task/.next/server/$file" "/tmp/app/.next/server/$file"
+              done
+              
+              # Start server
+              echo '[x-amplify-log][INFO] Starting Server'
+              node /tmp/app/server.js
+              EOL
+              
+              # Set correct permissions
+              chmod +x compute/default/run.sh
+            
+            # Install production dependencies
+            - |
+              echo "Installing production dependencies..."
+              cd compute/default
+              npm ci --production
+              cd ../..
+            
+        build:
+          commands:
+            # Build the application
+            - |
+              echo "Building application..."
+              export NODE_OPTIONS="--max_old_space_size=4096"
+              npm run build
+              
+              # Copy build artifacts
+              echo "Copying build artifacts..."
+              cp -r .next compute/default/
+              cp -r public/* compute/default/public/
+            
+      artifacts:
+        baseDirectory: compute/default
+        files:
+          - '**/*'
+        cache:
+          paths:
+            - compute/default/node_modules/**/*
+            - compute/default/.next/cache/**/*
+            - compute/default/.next/server/**/*.json
+            - compute/default/.next/static/**/*
+      customHeaders:
+        - pattern: '**/*'
+          headers:
+            - key: 'Cache-Control'
+              value: 'public, max-age=0, must-revalidate'
+            - key: 'Strict-Transport-Security'
+              value: 'max-age=31536000; includeSubDomains' 

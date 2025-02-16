@@ -1,0 +1,2 @@
+"use strict";exports.id=598,exports.ids=[598],exports.modules={56128:(e,t,r)=>{e.exports=r(30517)},97260:()=>{"getAll"in Headers.prototype||(Headers.prototype.getAll=function(e){if("set-cookie"!==(e=e.toLowerCase()))throw Error("Headers.getAll is only supported for Set-Cookie header");let t=[...this.entries()].filter(([t])=>t===e);return t.map(([,e])=>e)})}};
+//# sourceMappingURL=598.js.map
